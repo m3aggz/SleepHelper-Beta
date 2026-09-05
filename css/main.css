@@ -12,35 +12,44 @@
   padding: 0;
 }
 
-body {
-  font-size: 14px;
+/* html, body를 모바일 전체 화면으로 고정 */
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #277cC1; /* 배경색 이질감 방지 (게임 화면 기본 배경색) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* 기기 프레임: 고정 사이즈, 반응형 아님 */
+/* 기기 프레임: 아이폰 13 Pro 비율(390x844) 기준 화면 전체 확장 */
 .app-frame {
-  width: 390px;
-  height: 844px;
-  position: absolute;
-  top: 0px;
-  left: 0px;
+  width: 100vw;
+  height: 100vh;
+  max-width: 390px;
+  max-height: 844px;
+  position: relative; /* absolute에서 relative로 변경하여 화면 중앙 배치 */
   overflow: hidden;
 }
 
+/* 화면 내부 요소 전체 100% 채움 */
 .screen {
   position: absolute;
   top: 0px;
   left: 0px;
-  width: 390px;
-  height: 844px;
+  width: 100%;
+  height: 100%;
 }
 
-/* 배경 (체크 패턴) - 프레임 전체를 그대로 채움 */
+/* 배경 이미지 전체 확장 */
 .bg {
   position: absolute;
   top: 0px;
   left: 0px;
-  width: 390px;
-  height: 844px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 
