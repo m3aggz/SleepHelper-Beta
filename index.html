@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <!-- 아래 viewport 메타 태그를 추가합니다 -->
+  <!-- viewport 메타 태그 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>METHOD Z - Sleep Helper</title>
   <link href="https://fonts.googleapis.com/css?family=Honey+Crepes&display=swap" rel="stylesheet" />
@@ -12,17 +12,17 @@
   <div class="app-frame">
 
     <!-- Sleep Helper 시작 화면 -->
-<div id="sleep-start-screen" class="screen">
-  <button id="exit-btn" class="exit-btn" type="button">
-    <img src="./images/exit.png" alt="게임 종료" />
-  </button>
+    <div id="sleep-start-screen" class="screen">
+      <button id="exit-btn" class="exit-btn" type="button">
+        <img src="./images/exit.png" alt="게임 종료" />
+      </button>
 
-  <img class="main-graphic" src="./images/Sleep_main_graphic.png" alt="Sleep Helper" />
+      <img class="main-graphic" src="./images/Sleep_main_graphic.png" alt="Sleep Helper" />
 
-  <button id="start-btn" class="start-btn" type="button">
-    <img src="./images/Sleep_start_bt.png" alt="꿀우유 저으러 가기" />
-  </button>
-</div>
+      <button id="start-btn" class="start-btn" type="button">
+        <img src="./images/Sleep_start_bt.png" alt="꿀우유 저으러 가기" />
+      </button>
+    </div>
 
     <!-- Sleep Helper 게임 플레이 화면 -->
     <div id="sleep-game-screen" class="screen game-screen" hidden>
@@ -69,6 +69,12 @@
     function updateStageAssets() {
       var stage = getStage(score);
       if (stage === currentStage) return;
+
+      // 최초 접속/초기화 시(null)가 아니면서 스테이지가 변경될 때 레벨업 음향 재생
+      if (currentStage !== null) {
+        playLevelupSound();
+      }
+
       currentStage = stage;
       mugImg.src = './images/mug_' + stage + '.png';
       milkImg.src = './images/milk_' + stage + '.png';
@@ -86,6 +92,13 @@
     var clickAudio = new Audio('./audio/click_sound.wav');
     function playClickSound() {
       var s = clickAudio.cloneNode(true);
+      s.play().catch(function () {});
+    }
+
+    // 레벨업 사운드 (audio/level_up.wav)
+    var levelupAudio = new Audio('./audio/level_up.wav'); // 파일 확장자가 mp3라면 .mp3로 변경해 주세요
+    function playLevelupSound() {
+      var s = levelupAudio.cloneNode(true);
       s.play().catch(function () {});
     }
 
@@ -135,22 +148,22 @@
     });
 
     function resizeAppFrame() {
-  var frame = document.querySelector('.app-frame');
-  var windowWidth = window.innerWidth;
-  var windowHeight = window.innerHeight;
+      var frame = document.querySelector('.app-frame');
+      var windowWidth = window.innerWidth;
+      var windowHeight = window.innerHeight;
 
-  // 390x844 비율 유지하며 화면에 딱 맞는 배율 계산
-  var scaleX = windowWidth / 390;
-  var scaleY = windowHeight / 844;
-  var scale = Math.min(scaleX, scaleY);
+      // 390x844 비율 유지하며 화면에 딱 맞는 배율 계산
+      var scaleX = windowWidth / 390;
+      var scaleY = windowHeight / 844;
+      var scale = Math.min(scaleX, scaleY);
 
-  frame.style.transform = 'scale(' + scale + ')';
-}
+      frame.style.transform = 'scale(' + scale + ')';
+    }
 
-// 실행 및 리사이즈 이벤트 등록
-window.addEventListener('resize', resizeAppFrame);
-window.addEventListener('load', resizeAppFrame);
-resizeAppFrame();
+    // 실행 및 리사이즈 이벤트 등록
+    window.addEventListener('resize', resizeAppFrame);
+    window.addEventListener('load', resizeAppFrame);
+    resizeAppFrame();
   </script>
 </body>
 </html>
