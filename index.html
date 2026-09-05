@@ -45,125 +45,139 @@
   </div>
 
   <script>
-    var startScreen = document.getElementById('sleep-start-screen');
-    var gameScreen = document.getElementById('sleep-game-screen');
+  var startScreen = document.getElementById('sleep-start-screen');
+  var gameScreen = document.getElementById('sleep-game-screen');
 
-    var mugImg = document.getElementById('mug-img');
-    var milkImg = document.getElementById('milk-img');
-    var flowerImg = document.getElementById('flower-img');
-    var spoonImg = document.getElementById('spoon-img');
-    var scoreNumberEl = document.getElementById('score-number');
+  var mugImg = document.getElementById('mug-img');
+  var milkImg = document.getElementById('milk-img');
+  var flowerImg = document.getElementById('flower-img');
+  var spoonImg = document.getElementById('spoon-img');
+  var scoreNumberEl = document.getElementById('score-number');
 
-    var score = 0;
-    var currentStage = null;
+  var score = 0;
+  var currentStage = null;
 
-    // 탭 카운트 구간별 파일명 접미사 (mug_/milk_/flower_ 공통)
-    function getStage(s) {
-      if (s < 100) return '0_99';
-      if (s < 500) return '100-499';
-      if (s < 1000) return '500-999';
-      if (s < 3000) return '1000-2999';
-      return '3000_';
+  // 오디오 객체 미리 생성
+  var clickAudio = new Audio('./audio/click_sound.wav');
+  var levelupAudio = new Audio('./audio/level_up.wav');
+
+  // 모바일 오디오 제한 해제 (첫 터치/클릭 시 오디오를 준비시킴)
+  function unlockAudio() {
+    clickAudio.play().then(function() {
+      clickAudio.pause();
+      clickAudio.currentTime = 0;
+    }).catch(function() {});
+
+    levelupAudio.play().then(function() {
+      levelupAudio.pause();
+      levelupAudio.currentTime = 0;
+    }).catch(function() {});
+
+    window.removeEventListener('click', unlockAudio);
+    window.removeEventListener('touchstart', unlockAudio);
+  }
+  window.addEventListener('click', unlockAudio);
+  window.addEventListener('touchstart', unlockAudio);
+
+  // 탭 카운트 구간별 파일명 접미사
+  function getStage(s) {
+    if (s < 100) return '0_99';
+    if (s < 500) return '100-499';
+    if (s < 1000) return '500-999';
+    if (s < 3000) return '1000-2999';
+    return '3000_';
+  }
+
+  function playClickSound() {
+    var s = clickAudio.cloneNode(true);
+    s.play().catch(function (e) { console.log('Click sound error:', e); });
+  }
+
+  function playLevelupSound() {
+    var s = levelupAudio.cloneNode(true);
+    s.play().catch(function (e) { console.log('Levelup sound error:', e); });
+  }
+
+  function updateStageAssets() {
+    var stage = getStage(score);
+    if (stage === currentStage) return;
+
+    // 초기화(null)가 아니면서 스테이지가 넘어가면 레벨업 소리 재생
+    if (currentStage !== null) {
+      playLevelupSound();
     }
 
-    function updateStageAssets() {
-      var stage = getStage(score);
-      if (stage === currentStage) return;
+    currentStage = stage;
+    mugImg.src = './images/mug_' + stage + '.png';
+    milkImg.src = './images/milk_' + stage + '.png';
+    flowerImg.src = './images/flower_' + stage + '.png';
+  }
 
-      // 최초 접속/초기화 시(null)가 아니면서 스테이지가 변경될 때 레벨업 음향 재생
-      if (currentStage !== null) {
-        playLevelupSound();
-      }
+  // 애니메이션 재생 트리거
+  function replay(el, className) {
+    el.classList.remove(className);
+    void el.offsetWidth;
+    el.classList.add(className);
+  }
 
-      currentStage = stage;
-      mugImg.src = './images/mug_' + stage + '.png';
-      milkImg.src = './images/milk_' + stage + '.png';
-      flowerImg.src = './images/flower_' + stage + '.png';
-    }
+  function resetGame() {
+    score = 0;
+    currentStage = null;
+    scoreNumberEl.textContent = '0';
+    updateStageAssets();
+  }
 
-    // 애니메이션 재생 트리거 (클래스 제거 후 강제 리플로우 -> 재추가로 재생 재시작)
-    function replay(el, className) {
-      el.classList.remove(className);
-      void el.offsetWidth;
-      el.classList.add(className);
-    }
+  function handleTap() {
+    score += 1;
+    scoreNumberEl.textContent = String(score);
+    updateStageAssets();
+    replay(spoonImg, 'stirring');
+    replay(flowerImg, 'squashing');
+    playClickSound();
+  }
 
-    // 클릭 사운드
-    var clickAudio = new Audio('./audio/click_sound.wav');
-    function playClickSound() {
-      var s = clickAudio.cloneNode(true);
-      s.play().catch(function () {});
-    }
+  function showGameScreen() {
+    resetGame();
+    startScreen.hidden = true;
+    gameScreen.hidden = false;
+  }
 
-    // 레벨업 사운드 (audio/level_up.wav)
-    var levelupAudio = new Audio('./audio/level_up.wav'); // 파일 확장자가 mp3라면 .mp3로 변경해 주세요
-    function playLevelupSound() {
-      var s = levelupAudio.cloneNode(true);
-      s.play().catch(function () {});
-    }
+  function showStartScreen() {
+    gameScreen.hidden = true;
+    startScreen.hidden = false;
+  }
 
-    function resetGame() {
-      score = 0;
-      currentStage = null;
-      scoreNumberEl.textContent = '0';
-      updateStageAssets();
-    }
+  document.getElementById('exit-btn').addEventListener('click', function () {});
 
-    function handleTap() {
-      score += 1;
-      scoreNumberEl.textContent = String(score);
-      updateStageAssets();
-      replay(spoonImg, 'stirring');
-      replay(flowerImg, 'squashing');
-      playClickSound();
-    }
+  document.getElementById('start-btn').addEventListener('click', function () {
+    showGameScreen();
+  });
 
-    function showGameScreen() {
-      resetGame();
-      startScreen.hidden = true;
-      gameScreen.hidden = false;
-    }
+  document.getElementById('stop-btn').addEventListener('click', function (e) {
+    e.stopPropagation();
+    showStartScreen();
+  });
 
-    function showStartScreen() {
-      gameScreen.hidden = true;
-      startScreen.hidden = false;
-    }
+  gameScreen.addEventListener('click', function (e) {
+    if (e.target.closest('#stop-btn')) return;
+    handleTap();
+  });
 
-    document.getElementById('exit-btn').addEventListener('click', function () {
-      // TODO: 게임 종료 동작 정의 필요 (예: 앱/페이지 닫기 등)
-    });
+  function resizeAppFrame() {
+    var frame = document.querySelector('.app-frame');
+    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight;
 
-    document.getElementById('start-btn').addEventListener('click', function () {
-      showGameScreen();
-    });
+    var scaleX = windowWidth / 390;
+    var scaleY = windowHeight / 844;
+    var scale = Math.min(scaleX, scaleY);
 
-    document.getElementById('stop-btn').addEventListener('click', function (e) {
-      e.stopPropagation();
-      showStartScreen();
-    });
+    frame.style.transform = 'scale(' + scale + ')';
+  }
 
-    gameScreen.addEventListener('click', function (e) {
-      if (e.target.closest('#stop-btn')) return;
-      handleTap();
-    });
-
-    function resizeAppFrame() {
-      var frame = document.querySelector('.app-frame');
-      var windowWidth = window.innerWidth;
-      var windowHeight = window.innerHeight;
-
-      // 390x844 비율 유지하며 화면에 딱 맞는 배율 계산
-      var scaleX = windowWidth / 390;
-      var scaleY = windowHeight / 844;
-      var scale = Math.min(scaleX, scaleY);
-
-      frame.style.transform = 'scale(' + scale + ')';
-    }
-
-    // 실행 및 리사이즈 이벤트 등록
-    window.addEventListener('resize', resizeAppFrame);
-    window.addEventListener('load', resizeAppFrame);
-    resizeAppFrame();
-  </script>
+  window.addEventListener('resize', resizeAppFrame);
+  window.addEventListener('load', resizeAppFrame);
+  resizeAppFrame();
+</script>
 </body>
 </html>
