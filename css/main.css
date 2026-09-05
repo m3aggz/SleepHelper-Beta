@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Honey Crepes';
-    src: url('./fonts/HoneyCrepes.otf') format('opentype');
+    src: url('./fonts/HoneyCrepes.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
@@ -112,14 +112,11 @@ body {
   top: 148px;
   left: 50%;
   transform: translateX(-50%);
-
-  font-family: 'Honey Crepes' !important;
+  font-family: 'Honey Crepes', sans-serif;
   font-size: 64px;
   line-height: 1;
-
   color: #fff;
   -webkit-text-stroke: 1px rgba(47, 26, 11, 1);
-
   text-align: center;
   white-space: nowrap;
   pointer-events: none;
