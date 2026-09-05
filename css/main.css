@@ -112,11 +112,14 @@ body {
   top: 148px;
   left: 50%;
   transform: translateX(-50%);
-  font-family: 'Honey Crepes', sans-serif;
+
+  font-family: 'Honey Crepes' !important;
   font-size: 64px;
   line-height: 1;
+
   color: #fff;
   -webkit-text-stroke: 1px rgba(47, 26, 11, 1);
+
   text-align: center;
   white-space: nowrap;
   pointer-events: none;
