@@ -57,16 +57,29 @@
   var score = 0;
   var currentStage = null;
 
-  // 오디오 객체 미리 생성
-  var clickAudio = new Audio('./audio/click_sound.wav');
+ // 레벨업 오디오 객체 미리 생성
   var levelupAudio = new Audio('./audio/level_up.wav');
 
-  // 모바일 오디오 제한 해제 (첫 터치/클릭 시 오디오를 준비시킴)
+  // ==========================================
+  // 클릭 오디오 풀(Audio Pool) 설정 (연타 딜레이/먹통 해결)
+  // ==========================================
+  var POOL_SIZE = 5; // 동시 재생 가능한 채널 개수
+  var clickAudioPool = [];
+  var currentClickIndex = 0;
+
+  // 오디오 채널 5개 미리 생성
+  for (var i = 0; i < POOL_SIZE; i++) {
+    clickAudioPool.push(new Audio('./audio/click_sound.wav'));
+  }
+
+  // 모바일 오디오 제한 해제 (첫 터치/클릭 시 모든 오디오 채널을 미리 준비시킴)
   function unlockAudio() {
-    clickAudio.play().then(function() {
-      clickAudio.pause();
-      clickAudio.currentTime = 0;
-    }).catch(function() {});
+    clickAudioPool.forEach(function(audio) {
+      audio.play().then(function() {
+        audio.pause();
+        audio.currentTime = 0;
+      }).catch(function() {});
+    });
 
     levelupAudio.play().then(function() {
       levelupAudio.pause();
@@ -78,7 +91,7 @@
   }
   window.addEventListener('click', unlockAudio);
   window.addEventListener('touchstart', unlockAudio);
-
+  
   // 탭 카운트 구간별 파일명 접미사
   function getStage(s) {
     if (s < 100) return '0_99';
