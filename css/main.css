@@ -1,6 +1,7 @@
 @font-face {
     font-family: 'Honey Crepes';
-    src: url('./fonts/HoneyCrepes.woff2') format('woff2');
+    src: url('../fonts/HoneyCrepes.woff2') format('woff2'),
+         url('../fonts/HoneyCrepes.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
