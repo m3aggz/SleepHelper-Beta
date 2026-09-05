@@ -1,0 +1,225 @@
+@font-face {
+    font-family: 'Honey Crepes';
+    src: url('./fonts/HoneyCrepes.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-size: 14px;
+}
+
+/* 기기 프레임: 고정 사이즈, 반응형 아님 */
+.app-frame {
+  width: 390px;
+  height: 844px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
+}
+
+.screen {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 390px;
+  height: 844px;
+}
+
+/* 배경 (체크 패턴) - 프레임 전체를 그대로 채움 */
+.bg {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 390px;
+  height: 844px;
+  display: block;
+}
+
+/* 스푼 + 타이틀 + 머그컵 통합 그래픽 */
+.main-graphic {
+  position: absolute;
+  top: 86px;
+  left: 45px;
+  width: 300px;
+  height: 591px;
+  display: block;
+}
+
+/* 게임 종료 버튼: 완성본 기준 좌측 상단, 화면 왼쪽 밖으로 살짝 걸쳐있는 위치 (추정치) */
+.exit-btn {
+  position: absolute;
+  top: 34px;
+  left: -6px;
+  width: 69px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.exit-btn img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 꿀우유 저으러 가기 버튼 */
+.start-btn {
+  position: absolute;
+  top: 711px;
+  left: 86px;
+  width: 217px;
+  height: 50px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.start-btn img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ================= 게임 플레이 화면 ================= */
+
+.game-screen {
+  background: rgba(39, 124, 193, 1);
+  cursor: pointer;
+}
+
+.score-label {
+  position: absolute;
+  top: 99px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 111px;
+  height: 24px;
+  display: block;
+  pointer-events: none;
+}
+
+.score-number {
+  position: absolute;
+  top: 148px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Honey Crepes', sans-serif;
+  font-size: 64px;
+  line-height: 1;
+  color: #fff;
+  -webkit-text-stroke: 1px rgba(47, 26, 11, 1);
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* 머그 그림자: 이미지 에셋 없이 색상 도형으로 표현 */
+.mug-shadow {
+  position: absolute;
+  top: 652px;
+  left: 55px;
+  width: 276px;
+  height: 68px;
+  background: rgba(52, 232, 211, 1);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.mug-img {
+  position: absolute;
+  top: 450px;
+  left: 57px;
+  width: 301px;
+  height: 263px;
+  display: block;
+  pointer-events: none;
+}
+
+.milk-img {
+  position: absolute;
+  top: 456px;
+  left: 68px;
+  width: 200px;
+  height: 38px;
+  display: block;
+  pointer-events: none;
+}
+
+.flower-img {
+  position: absolute;
+  top: 546px;
+  left: 109px;
+  width: 122px;
+  height: 114px;
+  display: block;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+}
+
+/* 숟가락: 위치 약간 좌측으로 이동, 크기 20% 확대(52x145 -> 62x174) */
+.spoon-img {
+  position: absolute;
+  top: 300px;
+  left: 100px;
+  width: 62px;
+  height: 174px;
+  display: block;
+  pointer-events: none;
+  transform-origin: 50% 15%;
+}
+
+.stop-btn {
+  position: absolute;
+  top: 782px;
+  left: 271px;
+  width: 102px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.stop-btn img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 터치할 때마다 재생되는 숟가락 휘젓기 루프(1회) 애니메이션
+   - 가로로 납작한 타원형 경로(가로 이동폭 32px, 세로 이동폭 8px)로 확장
+   - 기존보다 훨씬 넓은 범위를 휘젓는 느낌으로 수정 */
+@keyframes spoonStir {
+  0%    { transform: translate(0px, 0px) rotate(0deg); }
+  12.5% { transform: translate(16px, 1px) rotate(2deg); }
+  25%   { transform: translate(32px, 4px) rotate(3deg); }
+  37.5% { transform: translate(16px, 7px) rotate(2deg); }
+  50%   { transform: translate(0px, 8px) rotate(0deg); }
+  62.5% { transform: translate(-16px, 7px) rotate(-2deg); }
+  75%   { transform: translate(-32px, 4px) rotate(-3deg); }
+  87.5% { transform: translate(-16px, 1px) rotate(-2deg); }
+  100%  { transform: translate(0px, 0px) rotate(0deg); }
+}
+.spoon-img.stirring {
+  animation: spoonStir 0.6s ease-in-out 1;
+}
+
+/* 터치할 때마다 재생되는 flower 스쿼시 앤 스트레치 애니메이션 */
+@keyframes flowerSquash {
+  0%   { transform: scale(1, 1); }
+  30%  { transform: scale(1.15, 0.85); }
+  55%  { transform: scale(0.9, 1.12); }
+  75%  { transform: scale(1.05, 0.95); }
+  100% { transform: scale(1, 1); }
+}
+.flower-img.squashing {
+  animation: flowerSquash 0.4s ease-out 1;
+}

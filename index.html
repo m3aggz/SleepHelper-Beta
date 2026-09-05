@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>METHOD Z - Sleep Helper</title>
+  <link href="https://fonts.googleapis.com/css?family=Honey+Crepes&display=swap" rel="stylesheet" />
+  <link href="./css/main.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="app-frame">
+
+    <!-- Sleep Helper 시작 화면 -->
+    <div id="sleep-start-screen" class="screen">
+      <img class="bg" src="./images/Sleep_main_page_BG.png" alt="" />
+
+      <button id="exit-btn" class="exit-btn" type="button">
+        <img src="./images/exit.png" alt="게임 종료" />
+      </button>
+
+      <img class="main-graphic" src="./images/Sleep_main_graphic.png" alt="Sleep Helper" />
+
+      <button id="start-btn" class="start-btn" type="button">
+        <img src="./images/Sleep_start_bt.png" alt="꿀우유 저으러 가기" />
+      </button>
+    </div>
+
+    <!-- Sleep Helper 게임 플레이 화면 -->
+    <div id="sleep-game-screen" class="screen game-screen" hidden>
+
+      <img class="score-label" src="./images/Sleep_score.png" alt="score" />
+      <div id="score-number" class="score-number">0</div>
+
+      <div class="mug-shadow"></div>
+
+      <img id="mug-img" class="mug-img" src="./images/mug_0_99.png" alt="mug" />
+      <img id="milk-img" class="milk-img" src="./images/milk_0_99.png" alt="milk" />
+      <img id="flower-img" class="flower-img" src="./images/flower_0_99.png" alt="flower" />
+      <img id="spoon-img" class="spoon-img" src="./images/spoon.png" alt="spoon" />
+
+      <button id="stop-btn" class="stop-btn" type="button">
+        <img src="./images/stop_button.png" alt="그만젓기" />
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    var startScreen = document.getElementById('sleep-start-screen');
+    var gameScreen = document.getElementById('sleep-game-screen');
+
+    var mugImg = document.getElementById('mug-img');
+    var milkImg = document.getElementById('milk-img');
+    var flowerImg = document.getElementById('flower-img');
+    var spoonImg = document.getElementById('spoon-img');
+    var scoreNumberEl = document.getElementById('score-number');
+
+    var score = 0;
+    var currentStage = null;
+
+    // 탭 카운트 구간별 파일명 접미사 (mug_/milk_/flower_ 공통)
+    function getStage(s) {
+      if (s < 100) return '0_99';
+      if (s < 500) return '100-499';
+      if (s < 1000) return '500-999';
+      if (s < 3000) return '1000-2999';
+      return '3000_';
+    }
+
+    function updateStageAssets() {
+      var stage = getStage(score);
+      if (stage === currentStage) return;
+      currentStage = stage;
+      mugImg.src = './images/mug_' + stage + '.png';
+      milkImg.src = './images/milk_' + stage + '.png';
+      flowerImg.src = './images/flower_' + stage + '.png';
+    }
+
+    // 애니메이션 재생 트리거 (클래스 제거 후 강제 리플로우 -> 재추가로 재생 재시작)
+    function replay(el, className) {
+      el.classList.remove(className);
+      void el.offsetWidth;
+      el.classList.add(className);
+    }
+
+    // 클릭 사운드
+    var clickAudio = new Audio('./audio/click_sound.wav');
+    function playClickSound() {
+      var s = clickAudio.cloneNode(true);
+      s.play().catch(function () {});
+    }
+
+    function resetGame() {
+      score = 0;
+      currentStage = null;
+      scoreNumberEl.textContent = '0';
+      updateStageAssets();
+    }
+
+    function handleTap() {
+      score += 1;
+      scoreNumberEl.textContent = String(score);
+      updateStageAssets();
+      replay(spoonImg, 'stirring');
+      replay(flowerImg, 'squashing');
+      playClickSound();
+    }
+
+    function showGameScreen() {
+      resetGame();
+      startScreen.hidden = true;
+      gameScreen.hidden = false;
+    }
+
+    function showStartScreen() {
+      gameScreen.hidden = true;
+      startScreen.hidden = false;
+    }
+
+    document.getElementById('exit-btn').addEventListener('click', function () {
+      // TODO: 게임 종료 동작 정의 필요 (예: 앱/페이지 닫기 등)
+    });
+
+    document.getElementById('start-btn').addEventListener('click', function () {
+      showGameScreen();
+    });
+
+    document.getElementById('stop-btn').addEventListener('click', function (e) {
+      e.stopPropagation();
+      showStartScreen();
+    });
+
+    gameScreen.addEventListener('click', function (e) {
+      if (e.target.closest('#stop-btn')) return;
+      handleTap();
+    });
+  </script>
+</body>
+</html>
