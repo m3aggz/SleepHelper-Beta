@@ -135,6 +135,24 @@
       if (e.target.closest('#stop-btn')) return;
       handleTap();
     });
+
+    function resizeAppFrame() {
+  var frame = document.querySelector('.app-frame');
+  var windowWidth = window.innerWidth;
+  var windowHeight = window.innerHeight;
+
+  // 390x844 비율 유지하며 화면에 딱 맞는 배율 계산
+  var scaleX = windowWidth / 390;
+  var scaleY = windowHeight / 844;
+  var scale = Math.min(scaleX, scaleY);
+
+  frame.style.transform = 'scale(' + scale + ')';
+}
+
+// 실행 및 리사이즈 이벤트 등록
+window.addEventListener('resize', resizeAppFrame);
+window.addEventListener('load', resizeAppFrame);
+resizeAppFrame();
   </script>
 </body>
 </html>
